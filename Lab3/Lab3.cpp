@@ -1,69 +1,38 @@
 ﻿#include <iostream>
 #include "Dictionary.h"
-#include <windows.h>
 
-void displayMenu() {
-    std::cout << "Menu:\n";
-    std::cout << "1. Add word\n";
-    std::cout << "2. Remove word\n";
-    std::cout << "3. Sort words\n";
-    std::cout << "4. Print words\n";
-    std::cout << "5. Find word\n";
-    std::cout << "6. Exit\n";
-}
+using namespace std;
+
 
 int main() {
-    setlocale(LC_ALL, "Ukrainian");
-    int capacity = 100; // Максимальна кількість слів у словнику
-    Dictionary dictionary(capacity);
+    try {
+        std::setlocale(LC_ALL, "Ukrainian");
+        Dictionary dict(10);
 
-    int choice;
-    std::string ua, en;
-    Word word;
+        Word word1("кіт", "cat");
+        Word word2("пес", "dog");
+        Word word3("вода", "water");
+        Word word4("яблуко", "apple");
+        Word word5("ноутбук", "laptop");
+        Word word6("телефон", "phone");
+        Word word7("навушники", "headphones");
 
-    do {
-        displayMenu();
-        std::cout << "Enter your choice: ";
-        std::cin >> choice;
 
-        switch (choice) {
-        case 1:
-            std::cout << "Enter Ukrainian word: ";
-            std::cin >> ua;
-            std::cout << "Enter English translation: ";
-            std::cin >> en;
-            dictionary.addWord(Word(ua, en));
-            break;
-        case 2:
-            std::cout << "Enter Ukrainian word to remove: ";
-            std::cin >> ua;
-            dictionary.removeWord(Word(ua, ""));
-            break;
-        case 3:
-            dictionary.sortWords();
-            std::cout << "Words sorted.\n";
-            break;
-        case 4:
-            dictionary.printWords();
-            break;
-        case 5:
-            std::cout << "Enter Ukrainian word to find: ";
-            std::cin >> ua;
-            try {
-                word = dictionary.findWord(ua);
-                std::cout << "Found: " << word.ukrainian << " - " << word.english << "\n";
-            }
-            catch (std::invalid_argument& e) {
-                std::cout << e.what() << "\n";
-            }
-            break;
-        case 6:
-            std::cout << "Exiting...\n";
-            break;
-        default:
-            std::cout << "Invalid choice, try again.\n";
-        }
-    } while (choice != 6);
+        dict + word1 + word2 + word3 + word4 + word5 + word6 + word7;
+        cout << "Слова в словнику після додавання:" << endl;
+        dict.printWords();
 
-    return 0;
+        dict - word2;
+        cout << "\nСлова в словнику після видалення слова 'пес':" << endl;
+        dict.printWords();
+
+        dict.sortByUkrainian();
+        cout << "\nСлова в словнику після сортування за українським перекладом:" << endl;
+        dict.printWords();
+
+        return 0;
+    }
+    catch (const exception& e) {
+        cerr << "Error: " << e.what() << endl;
+    }
 }

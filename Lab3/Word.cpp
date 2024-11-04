@@ -5,15 +5,23 @@ Word::Word() {
     this->english = "";
 }
 
-Word::Word(std::string ua, std::string en) {
+Word::Word(string ua, string en){
     this->ukrainian = ua;
     this->english = en;
 }
 
+string Word::getua() const {
+    return ukrainian;
+}
+
+string Word::geteng() const {
+    return english;
+}
+
 bool Word::operator<(const Word& other) const {
-    return this->ukrainian < other.ukrainian;
+    return ukrainian < other.ukrainian;
 }
 
 bool Word::operator>=(const Word& other) const {
-    return this->ukrainian >= other.ukrainian;
+    return ukrainian >= other.ukrainian;
 }

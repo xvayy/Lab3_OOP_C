@@ -1,79 +1,62 @@
 #include "Dictionary.h"
 #include <iostream>
 #include <algorithm>
-#include <stdexcept>
+#include <locale>
+
 
 Dictionary::Dictionary(int capacity) {
-    setlocale(LC_ALL, "Ukrainian");
-
     this->capacity = capacity;
     this->size = 0;
-    this->words = new Word[capacity];
-
-    this->addWord(Word("к≥т", "cat"));
-    this->addWord(Word("пес", "dog"));
-    this->addWord(Word("сонце", "sun"));
-    this->addWord(Word("м≥с€ць", "moon"));
-    this->addWord(Word("вода", "water"));
+    words = new Word[this->capacity];
 }
 
 Dictionary::~Dictionary() {
-    delete[] this->words;
+    delete[] words;
 }
 
 void Dictionary::addWord(const Word& word) {
-    if (this->size < this->capacity) {
-        this->words[this->size++] = word;
-    }
-    else {
-        throw std::out_of_range("Dictionary capacity exceeded");
+    if (size < capacity) {
+        words[size++] = word;
+    } else {
+        cerr << "Capacity exceeded. Cannot add more words." << endl;
     }
 }
 
 void Dictionary::removeWord(const Word& word) {
-    for (int i = 0; i < this->size; ++i) {
-        if (this->words[i].ukrainian == word.ukrainian) {
-            for (int j = i; j < this->size - 1; ++j) {
-                this->words[j] = this->words[j + 1];
+    for (int i = 0; i < size; ++i) {
+        if (words[i].getua() == word.getua()) {
+            for (int j = i; j < size - 1; ++j) {
+                words[j] = words[j + 1];
             }
-            this->size--;
-            return;
+            --size;
+            break;
         }
     }
-    throw std::invalid_argument("Word not found");
 }
 
-void Dictionary::sortWords() {
-    std::sort(this->words, this->words + this->size);
+void Dictionary::sortByUkrainian() {
+    for (int i = 0; i < size - 1; ++i) {
+        for (int j = 0; j < size - i - 1; ++j) {
+            if (words[j + 1] < words[j]) {
+                std::swap(words[j + 1], words[j]);
+            }
+        }
+    }
 }
 
 void Dictionary::printWords() const {
-    setlocale(LC_ALL, "Ukrainian");
-
-    for (int i = 0; i < this->size; ++i) {
-        std::cout << this->words[i].ukrainian << " - " << this->words[i].english << std::endl;
+    std::setlocale(LC_ALL, "Ukrainian");
+    for (int i = 0; i < size; ++i) {
+        cout << words[i].getua().c_str() << " - " << words[i].geteng().c_str() << endl;
     }
 }
 
-Word Dictionary::findWord(const std::string& ua) const {
-
-    for (int i = 0; i < this->size; ++i) {
-        if (this->words[i].ukrainian == ua) {
-            return this->words[i];
-        }
-    }
-    throw std::invalid_argument("Word not found");
+Dictionary& Dictionary::operator+(const Word& word) {
+    addWord(word);
+    return *this;
 }
 
-void Dictionary::inputWords(int count) {
-    setlocale(LC_ALL, "Ukrainian");
-
-    for (int i = 0; i < count; ++i) {
-        std::string ua, en;
-        std::cout << "Enter Ukrainian word: ";
-        std::cin >> ua;
-        std::cout << "Enter English translation: ";
-        std::cin >> en;
-        this->addWord(Word(ua, en));
-    }
+Dictionary& Dictionary::operator-(const Word& word) {
+    removeWord(word);
+    return *this;
 }

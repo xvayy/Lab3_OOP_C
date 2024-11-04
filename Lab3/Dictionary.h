@@ -1,6 +1,9 @@
-#pragma once
+#ifndef DICTIONARY_H
+#define DICTIONARY_H
+
 #include "Word.h"
 
+using namespace std;
 class Dictionary {
 private:
     Word* words;
@@ -10,10 +13,16 @@ private:
 public:
     Dictionary(int capacity);
     ~Dictionary();
+
     void addWord(const Word& word);
     void removeWord(const Word& word);
-    void sortWords();
+    void sortByUkrainian();
     void printWords() const;
-    Word findWord(const std::string& ua) const;
-    void inputWords(int count);
+
+    Dictionary& operator+(const Word& word);
+    Dictionary& operator-(const Word& word);
+    
+    
 };
+
+#endif
